@@ -54,15 +54,16 @@ const DOKJIMS_DEFAULTS = {
     { emoji: "🔥", name: "다이어트", desc: "식단 코칭 병행 감량 프로그램" }
   ],
   coaches: [
-    { name: "관장님", role: "프로 선수 출신 · PT 경력 다수", quote: "운동은 즐거워야 오래갑니다. 처음 오시는 분들일수록 더 편하게 알려드리려고 해요. 부담 갖지 말고 편하게 놀러 오세요." },
-    { name: "트레이너쌤", role: "PT 경력 다수 · 재활 트레이닝 가능", quote: "통증 때문에 운동을 망설이셨다면 저부터 만나보세요. 몸 상태 먼저 확인하고, 무리 없는 선에서 시작하실 수 있게 도와드릴게요." }
+    { name: "관장님", role: "프로 선수 출신 · PT 경력 다수", quote: "운동은 즐거워야 오래갑니다. 처음 오시는 분들일수록 더 편하게 알려드리려고 해요. 부담 갖지 말고 편하게 놀러 오세요.", photo: "" },
+    { name: "트레이너쌤", role: "PT 경력 다수 · 재활 트레이닝 가능", quote: "통증 때문에 운동을 망설이셨다면 저부터 만나보세요. 몸 상태 먼저 확인하고, 무리 없는 선에서 시작하실 수 있게 도와드릴게요.", photo: "" }
   ],
   offer: {
     title: "가입비 0원 + 개인 글러브 증정",
     desc: "3개월 이상 등록하시거나 PT 30회 이상 등록하시면 개인 글러브를 드려요. 지금 상담 신청하고 조건 자세히 확인해보세요."
   },
   socialProof: {
-    note: "아직 후기를 차곡차곡 모으고 있어요. 회원분들의 진짜 운동 모습과 변화 과정은 인스타그램에서 매주 확인하실 수 있어요."
+    note: "아직 후기를 차곡차곡 모으고 있어요. 회원분들의 진짜 운동 모습과 변화 과정은 인스타그램에서 매주 확인하실 수 있어요.",
+    images: ["", "", "", ""]
   },
   faq: [
     { q: "운동 경험이 전혀 없어도 괜찮나요?", a: "네, 전혀 문제없어요. 오히려 초보자분들이 더 많이 찾아주세요. 기초 체력과 기본 자세부터 천천히 잡아드립니다." },
@@ -102,6 +103,29 @@ function dokjimsSave(data) {
 
 function dokjimsReset() {
   localStorage.removeItem(DOKJIMS_STORAGE_KEY);
+}
+
+// 업로드한 이미지 파일을 적당한 크기로 줄여서 data URI 문자열로 변환 (localStorage 용량 절약)
+function dokjimsFileToDataUri(file, maxDim, quality, callback) {
+  maxDim = maxDim || 900;
+  quality = quality || 0.82;
+  var reader = new FileReader();
+  reader.onload = function () {
+    var img = new Image();
+    img.onload = function () {
+      var w = img.width, h = img.height;
+      if (w > h && w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+      else if (h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
+      var canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = function () { callback(null); };
+    img.src = reader.result;
+  };
+  reader.onerror = function () { callback(null); };
+  reader.readAsDataURL(file);
 }
 
 function dokjimsExportFile(data) {
