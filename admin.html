@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>독짐스 관리자 페이지</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<style>
+  :root{
+    --bg:#0e0e10;
+    --bg-alt:#17171a;
+    --card:#1c1c20;
+    --card-hover:#222227;
+    --text:#f5f5f2;
+    --text-dim:#9a9aa1;
+    --accent:#22c55e;
+    --accent-dim:#8de6ab;
+    --line:#2c2c31;
+    --danger:#ef4444;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    padding-bottom:90px;
+  }
+  a{color:var(--accent-dim);}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px;}
+
+  header{
+    position:sticky;top:0;z-index:20;
+    background:rgba(14,14,16,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:18px 0;
+  }
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  header h1{font-size:18px;font-weight:900;}
+  header h1 span{color:var(--accent);}
+  header .sub{font-size:12.5px;color:var(--text-dim);margin-top:2px;}
+  header a.preview{
+    font-size:13.5px;font-weight:700;
+    border:1px solid var(--line);border-radius:999px;
+    padding:8px 16px;white-space:nowrap;
+  }
+  header a.preview:hover{border-color:var(--accent);}
+
+  main{padding:32px 0 60px;}
+
+  .notice{
+    background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);
+    border-radius:var(--radius);padding:14px 18px;font-size:13.5px;color:var(--accent-dim);
+    margin-bottom:28px;line-height:1.6;
+  }
+
+  section.panel{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:24px 24px 26px;margin-bottom:20px;
+  }
+  section.panel h2{font-size:16px;font-weight:800;margin-bottom:4px;}
+  section.panel .desc{font-size:12.5px;color:var(--text-dim);margin-bottom:18px;}
+
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--text-dim);margin-bottom:6px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+  input[type=text], input[type=url], input[type=tel], textarea{
+    width:100%;padding:10px 12px;border-radius:8px;
+    border:1px solid var(--line);background:var(--bg);color:var(--text);
+    font-size:14px;font-family:inherit;
+    transition:border-color .15s ease;
+  }
+  input:focus, textarea:focus{outline:none;border-color:var(--accent);}
+  textarea{resize:vertical;min-height:56px;}
+
+  .item-card{
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:10px;
+    padding:16px;margin-top:12px;position:relative;
+  }
+  .item-card .item-head{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+  }
+  .item-card .item-label{font-size:12px;font-weight:800;color:var(--text-dim);letter-spacing:.03em;}
+  .item-card .remove-btn{
+    font-size:12px;color:var(--danger);background:none;border:none;cursor:pointer;
+    padding:4px 8px;border-radius:6px;
+  }
+  .item-card .remove-btn:hover{background:rgba(239,68,68,.12);}
+
+  .add-btn{
+    margin-top:14px;width:100%;
+    background:transparent;border:1px dashed var(--line);color:var(--text-dim);
+    border-radius:10px;padding:12px;font-size:13.5px;font-weight:700;cursor:pointer;
+  }
+  .add-btn:hover{border-color:var(--accent);color:var(--accent-dim);}
+
+  .emoji-row{display:grid;grid-template-columns:70px 1fr;gap:10px;}
+
+  .fixed-badge{
+    display:inline-block;font-size:11px;color:var(--text-dim);
+    border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin-left:8px;
+  }
+
+  .action-bar{
+    position:fixed;bottom:0;left:0;right:0;z-index:30;
+    background:rgba(14,14,16,.95);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    padding:12px 20px;
+    display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;
+  }
+  .action-bar button, .action-bar label.file-btn{
+    font-size:13.5px;font-weight:700;border-radius:999px;padding:11px 20px;cursor:pointer;
+    border:1px solid var(--line);background:transparent;color:var(--text);
+  }
+  .action-bar button.primary{background:var(--accent);color:#fff;border:none;}
+  .action-bar button.primary:hover{background:#1aa34d;}
+  .action-bar button.danger{color:var(--danger);border-color:rgba(239,68,68,.4);}
+  .action-bar button:hover{border-color:var(--accent);}
+  .action-bar input[type=file]{display:none;}
+
+  #toast{
+    position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(10px);
+    background:var(--accent);color:#fff;font-size:13.5px;font-weight:700;
+    padding:10px 18px;border-radius:999px;
+    opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;
+    z-index:40;white-space:nowrap;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:640px){
+    .row2, .emoji-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div>
+      <h1>독짐스<span>.</span> 관리자 페이지</h1>
+      <div class="sub">여기서 입력한 내용이 랜딩페이지에 그대로 반영돼요</div>
+    </div>
+    <a class="preview" href="index.html" target="_blank" rel="noopener">랜딩페이지 미리보기 →</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="notice">
+      💡 이 페이지에서 저장한 내용은 <b>지금 이 컴퓨터의 이 브라우저</b>에만 저장돼요. 다른 컴퓨터에서도 같은 내용을 쓰려면 아래 <b>JSON 내보내기</b>로 백업 파일을 받아 옮겨주세요.
+      수정 후에는 꼭 하단의 <b>저장하기</b>를 눌러야 반영됩니다.
+    </div>
+
+    <section class="panel">
+      <h2>연락처 · 위치 정보</h2>
+      <div class="desc">전화 상담 버튼, 카카오톡 링크, 오시는 길 섹션에 쓰여요</div>
+      <div class="row2">
+        <div class="field"><label>전화번호</label><input type="tel" data-path="contact.phone" placeholder="010-0000-0000"></div>
+        <div class="field"><label>카카오톡 채널 링크 (선택)</label><input type="url" data-path="contact.kakaoUrl" placeholder="https://pf.kakao.com/..."></div>
+      </div>
+      <div class="field"><label>인스타그램 링크</label><input type="url" data-path="contact.instagramUrl" placeholder="https://instagram.com/..."></div>
+      <div class="field"><label>주소 / 위치 설명</label><input type="text" data-path="contact.address"></div>
+      <div class="row2">
+        <div class="field"><label>지하철 · 접근성</label><input type="text" data-path="contact.subway"></div>
+        <div class="field"><label>운영시간</label><input type="text" data-path="contact.hours"></div>
+      </div>
+      <div class="field"><label>주차 안내</label><input type="text" data-path="contact.parking"></div>
+    </section>
+
+    <section class="panel">
+      <h2>지도 임베드 (네이버 지도)</h2>
+      <div class="desc">
+        네이버 클라우드 플랫폼에서 발급받은 Client ID와, 지도에 표시할 위도·경도를 입력하세요.
+        셋 다 채워지면 오시는 길 섹션에 실제 지도가 뜨고, 비어있으면 기존 안내 문구가 유지돼요.
+        좌표는 <a href="https://map.naver.com" target="_blank" rel="noopener">네이버지도</a>에서 위치 우클릭 → 좌표 복사로 구할 수 있어요.
+      </div>
+      <div class="field"><label>네이버 지도 Client ID</label><input type="text" data-path="contact.mapClientId" placeholder="예: d1zk69ukw5"></div>
+      <div class="row2">
+        <div class="field"><label>위도 (latitude)</label><input type="text" data-path="contact.mapLat" placeholder="예: 37.4353492"></div>
+        <div class="field"><label>경도 (longitude)</label><input type="text" data-path="contact.mapLng" placeholder="예: 127.1393136"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>히어로 (첫 화면)</h2>
+      <div class="desc">페이지 맨 위, 방문자가 가장 먼저 보는 영역이에요</div>
+      <div class="field"><label>상단 배지 문구</label><input type="text" data-path="hero.badge"></div>
+      <div class="row2">
+        <div class="field"><label>헤드라인 강조 부분 (초록색)</label><input type="text" data-path="hero.highlight"></div>
+        <div class="field"><label>헤드라인 나머지 부분</label><input type="text" data-path="hero.rest"></div>
+      </div>
+      <div class="field"><label>서브카피</label><textarea data-path="hero.sub"></textarea></div>
+      <div class="field">
+        <label>신뢰 포인트 3개 <span class="fixed-badge">항목 수 고정</span></label>
+        <div id="trustList"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>공감 질문</h2>
+      <div class="desc">"이런 고민, 다 이해해요" 섹션 — 방문자가 흔히 하는 걱정과 답변</div>
+      <div id="empathyList"></div>
+      <button class="add-btn" type="button" onclick="addItem('empathy', {q:'', a:''})">+ 질문 추가</button>
+    </section>
+
+    <section class="panel">
+      <h2>타겟 분기 카드</h2>
+      <div class="desc">"당신은 어느 쪽인가요?" 섹션 — 격투기 입문 / 다이어트·PT 두 갈래 <span class="fixed-badge">항목 수 고정</span></div>
+      <div class="item-card">
+        <div class="item-head"><span class="item-label">왼쪽 카드 · 격투기 입문</span></div>
+        <div class="field"><label>태그</label><input type="text" data-path="split.left.tag"></div>
+        <div class="field"><label>제목</label><input type="text" data-path="split.left.title"></div>
+        <div class="field"><label>설명</label><textarea data-path="split.left.desc"></textarea></div>
+        <div class="field"><label>버튼 문구</label><input type="text" data-path="split.left.cta"></div>
+      </div>
+      <div class="item-card">
+        <div class="item-head"><span class="item-label">오른쪽 카드 · 다이어트·PT</span></div>
+        <div class="field"><label>태그</label><input type="text" data-path="split.right.tag"></div>
+        <div class="field"><label>제목</label><input type="text" data-path="split.right.title"></div>
+        <div class="field"><label>설명</label><textarea data-path="split.right.desc"></textarea></div>
+        <div class="field"><label>버튼 문구</label><input type="text" data-path="split.right.cta"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>왜 독짐스여야 할까요 (차별점 3가지)</h2>
+      <div class="desc"><span class="fixed-badge">항목 수 고정</span></div>
+      <div id="uspList"></div>
+    </section>
+
+    <section class="panel">
+      <h2>프로그램</h2>
+      <div class="desc">MMA, 주짓수 같은 운동 프로그램 카드예요</div>
+      <div id="programList"></div>
+      <button class="add-btn" type="button" onclick="addItem('programs', {emoji:'🥋', name:'', desc:''})">+ 프로그램 추가</button>
+    </section>
+
+    <section class="panel">
+      <h2>관장님 · 트레이너쌤</h2>
+      <div id="coachList"></div>
+      <button class="add-btn" type="button" onclick="addItem('coaches', {name:'', role:'', quote:''})">+ 프로필 추가</button>
+    </section>
+
+    <section class="panel">
+      <h2>가입 오퍼 배너</h2>
+      <div class="field"><label>제목</label><input type="text" data-path="offer.title"></div>
+      <div class="field"><label>설명</label><textarea data-path="offer.desc"></textarea></div>
+    </section>
+
+    <section class="panel">
+      <h2>인스타그램 / 후기 안내 문구</h2>
+      <div class="field"><label>안내 문구</label><textarea data-path="socialProof.note"></textarea></div>
+    </section>
+
+    <section class="panel">
+      <h2>자주 묻는 질문</h2>
+      <div id="faqList"></div>
+      <button class="add-btn" type="button" onclick="addItem('faq', {q:'', a:''})">+ 질문 추가</button>
+    </section>
+
+    <section class="panel">
+      <h2>하단 안내 문구</h2>
+      <div class="field"><label>푸터 텍스트</label><input type="text" data-path="footer.note"></div>
+    </section>
+  </div>
+</main>
+
+<div class="action-bar">
+  <button type="button" class="danger" onclick="doReset()">기본값으로 초기화</button>
+  <button type="button" onclick="doImportClick()">JSON 가져오기</button>
+  <label class="file-btn" style="display:none;">
+    <input type="file" id="importFile" accept="application/json" onchange="doImport(event)">
+  </label>
+  <button type="button" onclick="doExport()">JSON 내보내기</button>
+  <button type="button" class="primary" onclick="doSave()">저장하기</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="data.js"></script>
+<script>
+  var state = dokjimsLoad();
+
+  function getPath(obj, path){
+    return path.split(".").reduce(function(o,k){ return (o == null) ? o : o[k]; }, obj);
+  }
+  function setPath(obj, path, value){
+    var parts = path.split(".");
+    var last = parts.pop();
+    var target = parts.reduce(function(o,k){ return o[k]; }, obj);
+    target[last] = value;
+  }
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function bindSimpleFields(){
+    document.querySelectorAll("[data-path]").forEach(function(el){
+      var path = el.getAttribute("data-path");
+      el.value = getPath(state, path) || "";
+      el.oninput = function(){ setPath(state, path, el.value); };
+    });
+  }
+
+  function renderTrust(){
+    var box = document.getElementById("trustList");
+    box.innerHTML = state.hero.trust.map(function(t, i){
+      return '<div class="item-card">' +
+        '<div class="row2">' +
+          '<div class="field"><label>강조 문구 '+(i+1)+'</label><input type="text" value="'+esc(t.bold)+'" oninput="setPath(state,\'hero.trust.'+i+'.bold\',this.value)"></div>' +
+          '<div class="field"><label>나머지 문구</label><input type="text" value="'+esc(t.rest)+'" oninput="setPath(state,\'hero.trust.'+i+'.rest\',this.value)"></div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderUsp(){
+    var box = document.getElementById("uspList");
+    box.innerHTML = state.usp.map(function(item, i){
+      return '<div class="item-card">' +
+        '<div class="item-head"><span class="item-label">'+(i+1)+'번째 차별점</span></div>' +
+        '<div class="field"><label>제목</label><input type="text" value="'+esc(item.title)+'" oninput="setPath(state,\'usp.'+i+'.title\',this.value)"></div>' +
+        '<div class="field"><label>설명</label><textarea oninput="setPath(state,\'usp.'+i+'.desc\',this.value)">'+esc(item.desc)+'</textarea></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderEmpathy(){
+    var box = document.getElementById("empathyList");
+    box.innerHTML = state.empathy.map(function(item, i){
+      return '<div class="item-card">' +
+        '<div class="item-head"><span class="item-label">질문 '+(i+1)+'</span><button type="button" class="remove-btn" onclick="removeItem(\'empathy\','+i+')">삭제</button></div>' +
+        '<div class="field"><label>질문 (고민)</label><input type="text" value="'+esc(item.q)+'" oninput="setPath(state,\'empathy.'+i+'.q\',this.value)"></div>' +
+        '<div class="field"><label>답변</label><textarea oninput="setPath(state,\'empathy.'+i+'.a\',this.value)">'+esc(item.a)+'</textarea></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderPrograms(){
+    var box = document.getElementById("programList");
+    box.innerHTML = state.programs.map(function(item, i){
+      return '<div class="item-card">' +
+        '<div class="item-head"><span class="item-label">프로그램 '+(i+1)+'</span><button type="button" class="remove-btn" onclick="removeItem(\'programs\','+i+')">삭제</button></div>' +
+        '<div class="emoji-row">' +
+          '<div class="field"><label>이모지</label><input type="text" value="'+esc(item.emoji)+'" oninput="setPath(state,\'programs.'+i+'.emoji\',this.value)"></div>' +
+          '<div class="field"><label>이름</label><input type="text" value="'+esc(item.name)+'" oninput="setPath(state,\'programs.'+i+'.name\',this.value)"></div>' +
+        '</div>' +
+        '<div class="field"><label>한줄 설명</label><input type="text" value="'+esc(item.desc)+'" oninput="setPath(state,\'programs.'+i+'.desc\',this.value)"></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderCoaches(){
+    var box = document.getElementById("coachList");
+    box.innerHTML = state.coaches.map(function(item, i){
+      return '<div class="item-card">' +
+        '<div class="item-head"><span class="item-label">프로필 '+(i+1)+'</span><button type="button" class="remove-btn" onclick="removeItem(\'coaches\','+i+')">삭제</button></div>' +
+        '<div class="row2">' +
+          '<div class="field"><label>이름</label><input type="text" value="'+esc(item.name)+'" oninput="setPath(state,\'coaches.'+i+'.name\',this.value)"></div>' +
+          '<div class="field"><label>역할 / 경력</label><input type="text" value="'+esc(item.role)+'" oninput="setPath(state,\'coaches.'+i+'.role\',this.value)"></div>' +
+        '</div>' +
+        '<div class="field"><label>한마디</label><textarea oninput="setPath(state,\'coaches.'+i+'.quote\',this.value)">'+esc(item.quote)+'</textarea></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderFaq(){
+    var box = document.getElementById("faqList");
+    box.innerHTML = state.faq.map(function(item, i){
+      return '<div class="item-card">' +
+        '<div class="item-head"><span class="item-label">FAQ '+(i+1)+'</span><button type="button" class="remove-btn" onclick="removeItem(\'faq\','+i+')">삭제</button></div>' +
+        '<div class="field"><label>질문</label><input type="text" value="'+esc(item.q)+'" oninput="setPath(state,\'faq.'+i+'.q\',this.value)"></div>' +
+        '<div class="field"><label>답변</label><textarea oninput="setPath(state,\'faq.'+i+'.a\',this.value)">'+esc(item.a)+'</textarea></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderAll(){
+    bindSimpleFields();
+    renderTrust();
+    renderUsp();
+    renderEmpathy();
+    renderPrograms();
+    renderCoaches();
+    renderFaq();
+  }
+
+  function addItem(path, emptyItem){
+    state[path].push(emptyItem);
+    renderAll();
+  }
+  function removeItem(path, index){
+    state[path].splice(index, 1);
+    renderAll();
+  }
+
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+
+  function doSave(){
+    dokjimsSave(state);
+    showToast("저장되었습니다 · 랜딩페이지를 새로고침하면 반영돼요");
+  }
+
+  function doReset(){
+    if(!confirm("입력한 모든 내용을 기본값으로 되돌릴까요? (저장 전이라도 화면 내용이 초기화됩니다)")) return;
+    state = dokjimsClone(DOKJIMS_DEFAULTS);
+    renderAll();
+    showToast("기본값으로 되돌렸어요 · 저장을 눌러야 실제 반영돼요");
+  }
+
+  function doExport(){
+    dokjimsExportFile(state);
+  }
+
+  function doImportClick(){
+    document.getElementById("importFile").click();
+  }
+
+  function doImport(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try{
+        var parsed = JSON.parse(reader.result);
+        var merged = dokjimsClone(DOKJIMS_DEFAULTS);
+        for(var key in parsed){ if(parsed[key] !== undefined) merged[key] = parsed[key]; }
+        state = merged;
+        renderAll();
+        showToast("불러왔어요 · 저장을 눌러야 실제 반영돼요");
+      }catch(err){
+        alert("JSON 파일을 읽는 데 실패했어요. 파일이 올바른지 확인해주세요.");
+      }
+      e.target.value = "";
+    };
+    reader.readAsText(file);
+  }
+
+  renderAll();
+</script>
+
+</body>
+</html>
