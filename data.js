@@ -17,7 +17,8 @@ const DOKJIMS_DEFAULTS = {
     parking: "문의 시 안내",
     mapClientId: "d1zk69ukw5",
     mapLat: "37.4353492",
-    mapLng: "127.1393136"
+    mapLng: "127.1393136",
+    naverPlaceUrl: "https://m.place.naver.com/place/2098851532/ticket"
   },
   hero: {
     badge: "성남 수진역 · 모란역 도보권",

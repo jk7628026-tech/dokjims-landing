@@ -276,23 +276,10 @@
     background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:32px;
   }
-  .field{margin-bottom:16px;}
-  .field label{display:block;font-size:13.5px;font-weight:700;margin-bottom:6px;color:var(--text-dim);}
-  .field input[type=text], .field input[type=tel], .field select{
-    width:100%;padding:12px 14px;border-radius:10px;
-    border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14.5px;
-  }
-  .field input:focus, .field select:focus{outline:1px solid var(--accent);}
-  .chip-group{display:flex;flex-wrap:wrap;gap:8px;}
-  .chip{
-    border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13.5px;
-    cursor:pointer;color:var(--text-dim);
-  }
-  .chip input{display:none;}
-  .chip:has(input:checked){
-    border-color:var(--accent);color:var(--accent-dim);background:rgba(34,197,94,.1);
-  }
-  .agree{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--text-dim);margin:18px 0;}
+  .apply-cta{text-align:center;}
+  .apply-cta-icon{font-size:34px;margin-bottom:14px;}
+  .apply-cta h3{font-size:19px;margin-bottom:10px;}
+  .apply-cta p{color:var(--text-dim);font-size:14.5px;margin-bottom:22px;}
   .apply-note{
     text-align:center;font-size:12.5px;color:var(--text-dim);margin-top:12px;
   }
@@ -432,47 +419,13 @@
   <div class="wrap">
     <h2 class="section-title">지금, 편하게 상담받아보세요</h2>
     <p class="section-sub">가입 강요 없이 궁금한 것만 편하게 물어보셔도 됩니다</p>
-    <form class="apply-box" onsubmit="handleSubmit(event)">
-      <div class="field">
-        <label for="name">이름</label>
-        <input type="text" id="name" name="name" placeholder="홍길동" required>
-      </div>
-      <div class="field">
-        <label for="phone">연락처</label>
-        <input type="tel" id="phone" name="phone" placeholder="010-0000-0000" required>
-      </div>
-      <div class="field">
-        <label>관심 프로그램 (중복 선택 가능)</label>
-        <div class="chip-group">
-          <label class="chip"><input type="checkbox" name="program" value="MMA">MMA</label>
-          <label class="chip"><input type="checkbox" name="program" value="주짓수">주짓수</label>
-          <label class="chip"><input type="checkbox" name="program" value="킥복싱">킥복싱</label>
-          <label class="chip"><input type="checkbox" name="program" value="PT">PT</label>
-          <label class="chip"><input type="checkbox" name="program" value="다이어트">다이어트</label>
-        </div>
-      </div>
-      <div class="field">
-        <label for="goal">운동 목적</label>
-        <select id="goal" name="goal">
-          <option value="">선택해주세요</option>
-          <option value="격투기 입문">격투기 입문</option>
-          <option value="다이어트">다이어트</option>
-          <option value="3대운동">3대 운동 / 근력 강화</option>
-          <option value="통증재활">통증 재활</option>
-          <option value="기타">기타</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="time">희망 상담 시간대 (선택)</label>
-        <input type="text" id="time" name="time" placeholder="예: 평일 저녁 7시 이후">
-      </div>
-      <label class="agree">
-        <input type="checkbox" required style="margin-top:2px;">
-        상담을 위한 개인정보(이름, 연락처) 수집 및 이용에 동의합니다.
-      </label>
-      <button type="submit" class="btn block">무료 상담 신청하기</button>
-      <p class="apply-note">신청 후 빠르면 당일, 늦어도 1~2일 이내 연락드려요</p>
-    </form>
+    <div class="apply-box apply-cta">
+      <div class="apply-cta-icon">📍</div>
+      <h3>네이버 플레이스에서 바로 예약하기</h3>
+      <p>리뷰, 사진, 운영시간까지 한 번에 확인하고 바로 예약·문의하실 수 있어요.</p>
+      <a class="btn block" id="applyMainBtn" href="#apply" target="_blank" rel="noopener">네이버 플레이스에서 예약하기 →</a>
+      <p class="apply-note">전화 상담을 원하시면 하단의 전화 버튼을 이용해주세요</p>
+    </div>
   </div>
 </section>
 
@@ -484,11 +437,6 @@
 
 <script src="data.js"></script>
 <script>
-  function handleSubmit(e){
-    e.preventDefault();
-    alert("신청이 접수되었습니다! (데모 화면입니다 — 실제 운영 시 신청 데이터를 받을 방법을 먼저 연결해주세요.)");
-  }
-
   function esc(s){
     return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
@@ -590,6 +538,16 @@
     }
     stickyButtons += '<a class="btn" href="#apply">무료 체험 신청</a>';
     document.getElementById("stickyCta").innerHTML = stickyButtons;
+
+    // 모든 "#apply" CTA를 네이버 플레이스 링크로 연결 (설정 안 됐으면 폼 섹션으로 스크롤)
+    var placeUrl = c.contact.naverPlaceUrl;
+    document.querySelectorAll('a[href="#apply"]').forEach(function(a){
+      if (placeUrl) {
+        a.href = placeUrl;
+        a.target = "_blank";
+        a.rel = "noopener";
+      }
+    });
   })();
 </script>
 
