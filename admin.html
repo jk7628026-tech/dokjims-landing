@@ -422,10 +422,7 @@
           '<div class="field"><label>이름</label><input type="text" value="'+esc(item.name)+'" oninput="setPath(state,\'coaches.'+i+'.name\',this.value)"></div>' +
           '<div class="field"><label>역할 / 경력</label><input type="text" value="'+esc(item.role)+'" oninput="setPath(state,\'coaches.'+i+'.role\',this.value)"></div>' +
         '</div>' +
-        '<div class="row2">' +
-          '<div class="field"><label>경력사항 (한 줄에 하나씩)</label><textarea placeholder="現 독짐스 MMA&FITNESS 코치&#10;前 ○○ 체육관 코치" oninput="setPath(state,\'coaches.'+i+'.career\',linesToArr(this.value))">'+esc((item.career||[]).join("\n"))+'</textarea></div>' +
-          '<div class="field"><label>자격사항 (한 줄에 하나씩)</label><textarea placeholder="주짓수 블랙벨트&#10;생활스포츠지도사 2급&#10;○○대회 우승" oninput="setPath(state,\'coaches.'+i+'.certs\',linesToArr(this.value))">'+esc((item.certs||[]).join("\n"))+'</textarea></div>' +
-        '</div>' +
+        '<div class="field"><label>경력 (한 줄에 하나씩 자유롭게 작성하세요)</label><textarea style="min-height:100px;" oninput="setPath(state,\'coaches.'+i+'.career\',linesToArr(this.value))">'+esc((item.career||[]).join("\n"))+'</textarea></div>' +
         '<div class="field"><label>한마디</label><textarea oninput="setPath(state,\'coaches.'+i+'.quote\',this.value)">'+esc(item.quote)+'</textarea></div>' +
       '</div>';
     }).join("");
