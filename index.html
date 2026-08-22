@@ -507,7 +507,7 @@
         ? ""
         : esc(p.name) + "<br>사진";
       var photoStyle = p.photo
-        ? ' style="background-image:url(' + "'" + p.photo.replace(/'/g, "%27") + "'" + ');background-position:center ' + (p.photoPosition || "center") + '"'
+        ? ' style="background-image:url(' + "'" + p.photo.replace(/'/g, "%27") + "'" + ');background-position:' + (p.photoPositionX || "center") + ' ' + (p.photoPositionY || "center") + '"'
         : "";
       return '<div class="card"><div class="photo"' + photoStyle + '>' + photoInner + '</div><div><h3>'+esc(p.name)+'</h3><div class="role">'+esc(p.role)+'</div><p>&quot;'+esc(p.quote)+'&quot;</p></div></div>';
     }).join("");
