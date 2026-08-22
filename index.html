@@ -312,8 +312,13 @@
     padding:10px 16px;
     display:flex;gap:10px;
   }
-  .sticky-cta a{flex:1;}
-  .sticky-cta .btn{padding:14px;font-size:14.5px;}
+  .sticky-cta a{flex:1;min-width:0;}
+  .sticky-cta .btn{padding:14px 10px;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  @media (max-width:420px){
+    .sticky-cta{gap:6px;padding:8px 10px;}
+    .sticky-cta .btn{padding:12px 6px;font-size:12.5px;gap:4px;}
+  }
 
   @media (max-width:820px){
     .empathy .grid, .split, .usp-grid, .coach-grid, .location .grid{grid-template-columns:1fr;}
@@ -566,9 +571,9 @@
     initNaverMap(c);
 
     var telHref = "tel:" + c.contact.phone.replace(/[^0-9+]/g, "");
-    var stickyButtons = '<a class="btn ghost" href="'+telHref+'">📞 전화 상담</a>';
+    var stickyButtons = '<a class="btn ghost" href="'+telHref+'">📞 전화</a>';
     if (c.contact.kakaoUrl) {
-      stickyButtons += '<a class="btn ghost" href="'+esc(c.contact.kakaoUrl)+'" target="_blank" rel="noopener">💬 카톡 상담</a>';
+      stickyButtons += '<a class="btn ghost" href="'+esc(c.contact.kakaoUrl)+'" target="_blank" rel="noopener">💬 카톡</a>';
     }
     stickyButtons += '<a class="btn" href="#apply">무료 체험 신청</a>';
     document.getElementById("stickyCta").innerHTML = stickyButtons;
