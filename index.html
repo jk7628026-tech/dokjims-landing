@@ -539,7 +539,7 @@
       return "<details><summary>"+esc(item.q)+"</summary><p>"+esc(item.a)+"</p></details>";
     }).join("");
 
-    document.getElementById("footerNote").innerHTML = esc(c.footer.note) + "<br>※ 실제 상호명/주소/연락처/사업자 정보는 운영 전 반드시 업데이트해주세요.";
+    document.getElementById("footerNote").textContent = c.footer.note;
 
     initNaverMap(c);
 
