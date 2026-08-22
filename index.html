@@ -195,18 +195,32 @@
   }
   .coach-grid .card{
     background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    padding:26px;display:flex;gap:18px;align-items:flex-start;
+    padding:26px;display:flex;gap:22px;align-items:flex-start;
   }
   .coach-grid .photo{
-    width:76px;height:76px;border-radius:50%;flex-shrink:0;
+    width:120px;aspect-ratio:3/4;border-radius:12px;flex-shrink:0;
     background:linear-gradient(160deg,#3a3a40,#222226);
     background-size:cover;background-position:center;
     display:flex;align-items:center;justify-content:center;
     font-size:12px;color:var(--text-dim);text-align:center;
   }
-  .coach-grid h3{font-size:17px;margin-bottom:4px;}
-  .coach-grid .role{font-size:13px;color:var(--accent-dim);margin-bottom:8px;}
-  .coach-grid p{font-size:14px;color:var(--text-dim);}
+  .coach-grid h3{font-size:18px;margin-bottom:4px;}
+  .coach-grid .role{font-size:13px;color:var(--accent-dim);margin-bottom:14px;}
+  .coach-grid .quote{font-size:14px;color:var(--text-dim);margin-top:14px;}
+  .coach-grid .subsection{margin-bottom:14px;}
+  .coach-grid .subsection h4{
+    font-size:12px;font-weight:800;color:var(--text);letter-spacing:.03em;
+    padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--line);
+  }
+  .coach-grid .subsection ul{list-style:none;}
+  .coach-grid .subsection li{
+    font-size:13px;color:var(--text-dim);line-height:1.7;
+    padding-left:12px;position:relative;
+  }
+  .coach-grid .subsection li::before{
+    content:"";position:absolute;left:0;top:9px;
+    width:4px;height:4px;border-radius:50%;background:var(--accent);
+  }
 
   /* 오퍼 배너 */
   .offer{
@@ -509,7 +523,16 @@
       var photoStyle = p.photo
         ? ' style="background-image:url(' + "'" + p.photo.replace(/'/g, "%27") + "'" + ');background-position:' + (p.photoPositionX || "center") + ' ' + (p.photoPositionY || "center") + '"'
         : "";
-      return '<div class="card"><div class="photo"' + photoStyle + '>' + photoInner + '</div><div><h3>'+esc(p.name)+'</h3><div class="role">'+esc(p.role)+'</div><p>&quot;'+esc(p.quote)+'&quot;</p></div></div>';
+      function listSection(title, items){
+        var arr = (items || []).filter(function(s){ return s && s.trim(); });
+        if (!arr.length) return "";
+        return '<div class="subsection"><h4>'+esc(title)+'</h4><ul>' +
+          arr.map(function(t){ return "<li>"+esc(t)+"</li>"; }).join("") +
+          "</ul></div>";
+      }
+      var careerHtml = listSection("경력사항", p.career);
+      var certsHtml = listSection("자격사항", p.certs);
+      return '<div class="card"><div class="photo"' + photoStyle + '>' + photoInner + '</div><div><h3>'+esc(p.name)+'</h3><div class="role">'+esc(p.role)+'</div>'+careerHtml+certsHtml+'<p class="quote">&quot;'+esc(p.quote)+'&quot;</p></div></div>';
     }).join("");
 
     document.getElementById("offerTitle").textContent = c.offer.title;
