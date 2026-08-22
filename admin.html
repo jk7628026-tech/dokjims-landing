@@ -389,8 +389,14 @@
   function renderCoaches(){
     var box = document.getElementById("coachList");
     box.innerHTML = state.coaches.map(function(item, i){
-      var thumbStyle = item.photo ? ' style="background-image:url(\''+item.photo.replace(/'/g,"%27")+'\')"' : "";
+      var pos = item.photoPosition || "center";
+      var thumbStyle = item.photo ? ' style="background-image:url(\''+item.photo.replace(/'/g,"%27")+'\');background-position:center '+pos+'"' : "";
       var thumbText = item.photo ? "" : "사진 없음";
+      var posBtns = ["top","center","bottom"].map(function(p){
+        var label = p === "top" ? "위" : (p === "bottom" ? "아래" : "중앙");
+        var active = pos === p ? ' style="border-color:var(--accent);color:var(--accent-dim);"' : "";
+        return '<button type="button" class="upload-btn"'+active+' onclick="setPath(state,\'coaches.'+i+'.photoPosition\',\''+p+'\');renderCoaches();">'+label+'</button>';
+      }).join("");
       return '<div class="item-card">' +
         '<div class="item-head"><span class="item-label">프로필 '+(i+1)+'</span><button type="button" class="remove-btn" onclick="removeItem(\'coaches\','+i+')">삭제</button></div>' +
         '<div class="photo-row">' +
@@ -400,6 +406,7 @@
             (item.photo ? '<button type="button" class="remove-photo-btn" onclick="setPath(state,\'coaches.'+i+'.photo\',\'\');renderCoaches();">사진 제거</button>' : '') +
           '</div>' +
         '</div>' +
+        (item.photo ? '<div class="field"><label>사진에서 얼굴이 잘리면 위치를 조절하세요</label><div class="photo-actions">'+posBtns+'</div></div>' : "") +
         '<div class="row2">' +
           '<div class="field"><label>이름</label><input type="text" value="'+esc(item.name)+'" oninput="setPath(state,\'coaches.'+i+'.name\',this.value)"></div>' +
           '<div class="field"><label>역할 / 경력</label><input type="text" value="'+esc(item.role)+'" oninput="setPath(state,\'coaches.'+i+'.role\',this.value)"></div>' +
