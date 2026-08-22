@@ -530,7 +530,7 @@
           arr.map(function(t){ return "<li>"+esc(t)+"</li>"; }).join("") +
           "</ul></div>";
       }
-      var careerHtml = listSection("경력", p.career);
+      var careerHtml = listSection("경력 및 자격사항", p.career);
       return '<div class="card"><div class="photo"' + photoStyle + '>' + photoInner + '</div><div><h3>'+esc(p.name)+'</h3><div class="role">'+esc(p.role)+'</div>'+careerHtml+'<p class="quote">&quot;'+esc(p.quote)+'&quot;</p></div></div>';
     }).join("");
 

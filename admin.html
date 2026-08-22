@@ -422,7 +422,7 @@
           '<div class="field"><label>이름</label><input type="text" value="'+esc(item.name)+'" oninput="setPath(state,\'coaches.'+i+'.name\',this.value)"></div>' +
           '<div class="field"><label>역할 / 경력</label><input type="text" value="'+esc(item.role)+'" oninput="setPath(state,\'coaches.'+i+'.role\',this.value)"></div>' +
         '</div>' +
-        '<div class="field"><label>경력 (한 줄에 하나씩 자유롭게 작성하세요)</label><textarea style="min-height:100px;" oninput="setPath(state,\'coaches.'+i+'.career\',linesToArr(this.value))">'+esc((item.career||[]).join("\n"))+'</textarea></div>' +
+        '<div class="field"><label>경력 및 자격사항 (한 줄에 하나씩 자유롭게 작성하세요)</label><textarea style="min-height:100px;" oninput="setPath(state,\'coaches.'+i+'.career\',linesToArr(this.value))">'+esc((item.career||[]).join("\n"))+'</textarea></div>' +
         '<div class="field"><label>한마디</label><textarea oninput="setPath(state,\'coaches.'+i+'.quote\',this.value)">'+esc(item.quote)+'</textarea></div>' +
       '</div>';
     }).join("");
