@@ -165,7 +165,7 @@ const DOKJIMS_DEFAULTS = {
         "USAPL korea nationals -82.5kg 체급 주니어 3위",
         "USAPL Honam Royal Rumble -82.5kg 체급 1위 & 주니어 베스트 리프터 2위",
         "USAPL Dr. strength -82.5kg 체급 1위",
-        "USAPL Team Titan 19|",
+        "USAPL Team Titan 1위",
         "대회 공식 기록: 스쿼트 275kg/ 벤치프레스 145kg/ 데드리프트 280kg (합계 700kg)"
       ]
     }
