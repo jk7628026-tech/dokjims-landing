@@ -214,14 +214,9 @@
     </section>
 
     <section class="panel">
-      <h2>히어로 (첫 화면)</h2>
-      <div class="desc">페이지 맨 위, 방문자가 가장 먼저 보는 영역이에요</div>
-      <div class="field"><label>상단 배지 문구</label><input type="text" data-path="hero.badge"></div>
-      <div class="row2">
-        <div class="field"><label>헤드라인 강조 부분 (초록색)</label><input type="text" data-path="hero.highlight"></div>
-        <div class="field"><label>헤드라인 나머지 부분</label><input type="text" data-path="hero.rest"></div>
-      </div>
-      <div class="field"><label>서브카피</label><textarea data-path="hero.sub"></textarea></div>
+      <h2>히어로 (첫 화면 배너)</h2>
+      <div class="desc">사진이 5.5초마다 자동으로 넘어가는 배너예요. 슬라이드마다 문구를 따로 쓸 수 있어요. 사진 자체를 바꾸거나 추가하려면 파일을 저에게 보내주세요. 슬라이드를 모두 지우면 사진 없는 기본 배너로 나와요.</div>
+      <div id="heroSlideList"></div>
       <div class="field">
         <label>신뢰 포인트 3개 <span class="fixed-badge">항목 수 고정</span></label>
         <div id="trustList"></div>
@@ -301,6 +296,18 @@
       <h2>가입 오퍼 배너</h2>
       <div class="field"><label>제목</label><input type="text" data-path="offer.title"></div>
       <div class="field"><label>설명</label><textarea data-path="offer.desc"></textarea></div>
+    </section>
+
+    <section class="panel">
+      <h2>회원 후기</h2>
+      <div class="desc">네이버 리뷰 등에서 옮겨 적은 후기예요. 원문을 바꾸지 말고, 이름은 "김OO님"처럼 가려서 적어주세요. 후기를 모두 지우면 이 섹션은 사이트에서 사라져요.</div>
+      <div class="row2">
+        <div class="field"><label>섹션 제목</label><input type="text" data-path="reviews.title"></div>
+        <div class="field"><label>한 줄 안내</label><input type="text" data-path="reviews.sub"></div>
+      </div>
+      <div id="reviewList"></div>
+      <button class="add-btn" type="button" onclick="addReview()">+ 후기 추가</button>
+      <div class="field" style="margin-top:18px;"><label>후기 아래 안내 문구</label><input type="text" data-path="reviews.note"></div>
     </section>
 
     <section class="panel">
@@ -566,14 +573,71 @@
     renderGalleryAdmin();
   }
 
+  function renderHeroSlides(){
+    var list = state.hero.slides || (state.hero.slides = []);
+    document.getElementById("heroSlideList").innerHTML = list.map(function(s, i){
+      var bgimg = s.image ? "background-image:url('"+esc(s.image)+"');" : "";
+      return '<div class="item-card">' +
+        '<div class="item-head"><span class="item-label">슬라이드 '+(i+1)+'</span>' +
+          '<span class="photo-actions">' +
+            '<button type="button" class="upload-btn" '+(i===0?'disabled':'')+' onclick="moveSlide('+i+',-1)">↑</button>' +
+            '<button type="button" class="upload-btn" '+(i===list.length-1?'disabled':'')+' onclick="moveSlide('+i+',1)">↓</button>' +
+            '<button type="button" class="remove-btn" onclick="removeSlide('+i+')">삭제</button>' +
+          '</span></div>' +
+        '<div class="photo-row"><div class="photo-thumb square" style="width:96px;height:54px;border-radius:8px;'+bgimg+'">'+(s.image?"":"사진 없음")+'</div>' +
+          '<div style="font-size:12px;color:var(--text-dim);word-break:break-all;">'+esc(s.image||"")+'</div></div>' +
+        '<div class="field"><label>상단 배지 문구</label><input type="text" value="'+esc(s.badge||"")+'" oninput="setPath(state,\'hero.slides.'+i+'.badge\',this.value)"></div>' +
+        '<div class="row2">' +
+          '<div class="field"><label>헤드라인 강조 부분 (초록색)</label><input type="text" value="'+esc(s.highlight||"")+'" oninput="setPath(state,\'hero.slides.'+i+'.highlight\',this.value)"></div>' +
+          '<div class="field"><label>헤드라인 나머지 부분</label><input type="text" value="'+esc(s.rest||"")+'" oninput="setPath(state,\'hero.slides.'+i+'.rest\',this.value)"></div>' +
+        '</div>' +
+        '<div class="field"><label>서브카피</label><textarea oninput="setPath(state,\'hero.slides.'+i+'.sub\',this.value)">'+esc(s.sub||"")+'</textarea></div>' +
+      '</div>';
+    }).join("");
+  }
+  function moveSlide(i, d){
+    var a = state.hero.slides, j = i + d;
+    if (j < 0 || j >= a.length) return;
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp; renderHeroSlides();
+  }
+  function removeSlide(i){ state.hero.slides.splice(i, 1); renderHeroSlides(); }
+
+  function renderReviewsAdmin(){
+    var list = state.reviews.items || (state.reviews.items = []);
+    document.getElementById("reviewList").innerHTML = list.map(function(r, i){
+      return '<div class="item-card">' +
+        '<div class="item-head"><span class="item-label">후기 '+(i+1)+'</span>' +
+          '<span class="photo-actions">' +
+            '<button type="button" class="upload-btn" '+(i===0?'disabled':'')+' onclick="moveReview('+i+',-1)">↑</button>' +
+            '<button type="button" class="upload-btn" '+(i===list.length-1?'disabled':'')+' onclick="moveReview('+i+',1)">↓</button>' +
+            '<button type="button" class="remove-btn" onclick="removeReview('+i+')">삭제</button>' +
+          '</span></div>' +
+        '<div class="field"><label>후기 내용</label><textarea style="min-height:110px;" oninput="setPath(state,\'reviews.items.'+i+'.quote\',this.value)">'+esc(r.quote||"")+'</textarea></div>' +
+        '<div class="row2">' +
+          '<div class="field"><label>이름 (가려서)</label><input type="text" value="'+esc(r.name||"")+'" oninput="setPath(state,\'reviews.items.'+i+'.name\',this.value)"></div>' +
+          '<div class="field"><label>출처 · 시기</label><input type="text" value="'+esc(r.meta||"")+'" oninput="setPath(state,\'reviews.items.'+i+'.meta\',this.value)"></div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+  function addReview(){ state.reviews.items.push({quote:"", name:"", meta:""}); renderReviewsAdmin(); }
+  function moveReview(i, d){
+    var a = state.reviews.items, j = i + d;
+    if (j < 0 || j >= a.length) return;
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp; renderReviewsAdmin();
+  }
+  function removeReview(i){ state.reviews.items.splice(i, 1); renderReviewsAdmin(); }
+
   function renderAll(){
     bindSimpleFields();
     renderTrust();
     renderUsp();
     renderEmpathy();
     renderPrograms();
+    renderHeroSlides();
     renderTimetable();
     renderGalleryAdmin();
+    renderReviewsAdmin();
     renderCoaches();
     renderInstaUploads();
     renderFaq();
