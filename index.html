@@ -628,7 +628,8 @@
       "<li><b>위치</b>"+esc(loc.address)+"</li>"+
       "<li><b>지하철</b>"+esc(loc.subway)+"</li>"+
       "<li><b>운영시간</b>"+esc(loc.hours)+"</li>"+
-      "<li><b>주차</b>"+esc(loc.parking)+"</li>";
+      "<li><b>주차</b>"+esc(loc.parking)+"</li>"+
+      (loc.facility ? "<li><b>시설</b>"+esc(loc.facility)+"</li>" : "");
 
     document.getElementById("faqList").innerHTML = c.faq.map(function(item){
       return "<details><summary>"+esc(item.q)+"</summary><p>"+esc(item.a)+"</p></details>";

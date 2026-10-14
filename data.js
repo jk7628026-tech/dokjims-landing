@@ -14,11 +14,12 @@ const DOKJIMS_DEFAULTS = {
     "address": "경기도 성남시 중원구 광명로 93, 5층 (수진역 인근)",
     "subway": "8호선 수진역, 모란역 도보 이동 가능",
     "hours": "10:00~22:00",
-    "parking": "문의 시 안내",
+    "parking": "주차 가능",
     "mapClientId": "d1zk69ukw5",
     "mapLat": "37.4353492",
     "mapLng": "127.1393136",
-    "naverPlaceUrl": "https://m.place.naver.com/place/2098851532/ticket"
+    "naverPlaceUrl": "https://m.place.naver.com/place/2098851532/ticket",
+    "facility": "85평 · 샌드백 3개 · 탈의실·샤워실"
   },
   "hero": {
     "badge": "성남 수진역 · 모란역 도보권",
@@ -31,7 +32,7 @@ const DOKJIMS_DEFAULTS = {
         "rest": "· 지금 등록 시"
       },
       {
-        "bold": "PT 회원 250명+",
+        "bold": "코치진 합산 PT 250명+",
         "rest": "지도 경험"
       },
       {
@@ -127,7 +128,7 @@ const DOKJIMS_DEFAULTS = {
         "현)FIGT.4.STRENGTHX백짐 트레이너 (2024 ~ 현재)",
         "현)종합격투기 프로선수 활동 (2014 ~ 현재)",
         "전)스카이뷰 휘트니스 트레이너 (2020~ 2026)데이비짐• 피스트짐• 탑발란스 피트니스• 효GYM (2017 ~ 2020)",
-        "해외 연수 & 모션 기반 트레이닝 워 크샵 참가",
+        "해외 연수 & 모션 기반 트레이닝 워크샵 참가",
         "생활스포츠지도사 2급",
         "ELDOA LV 1.2",
         "SMTS 스포츠의학 전문과정 수료",
@@ -139,7 +140,7 @@ const DOKJIMS_DEFAULTS = {
         "기능적 가동범위 컨디셔닝 전문가",
         "종합격투기 (프로 전적 7전 3승 3패 1무)",
         "RMT 근신경 반응검사 코스 수료",
-        "킥복싱 전적  (1전 1승)",
+        "킥복싱 전적 (1전 1승)",
         "Pcs 5 (performance coach schooling)",
         "주짓수 퍼플 벨트",
         "프리포먼스 나스코 5기"
@@ -162,7 +163,7 @@ const DOKJIMS_DEFAULTS = {
         "대회 이력 & 기록 (3대 Total 700kg)",
         "USAPL Summer Slam 주니어 베스트 리프터 2위",
         "USAPL korea nationals -82.5kg 체급 주니어 3위",
-        "USAPL Honam Royal Rumble -82.5kg 체급 1위 & 주니어 베스 트 리프터 2위",
+        "USAPL Honam Royal Rumble -82.5kg 체급 1위 & 주니어 베스트 리프터 2위",
         "USAPL Dr. strength -82.5kg 체급 1위",
         "USAPL Team Titan 19|",
         "대회 공식 기록: 스쿼트 275kg/ 벤치프레스 145kg/ 데드리프트 280kg (합계 700kg)"
