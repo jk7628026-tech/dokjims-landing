@@ -324,6 +324,40 @@ const DOKJIMS_DEFAULTS = {
         "desc": "레슬링·주짓수·MMA 파운드 등 그라운드 기술을 배우는 시간이에요."
       }
     ]
+  },
+  "gallery": {
+    "title": "시설 둘러보기",
+    "sub": "방문 전에 미리 구경해보세요",
+    "items": [
+      {
+        "src": "assets/gallery/mat.jpg",
+        "caption": "매트룸"
+      },
+      {
+        "src": "assets/gallery/weight-1.jpg",
+        "caption": "웨이트존"
+      },
+      {
+        "src": "assets/gallery/weight-2.jpg",
+        "caption": "웨이트존 · 머신"
+      },
+      {
+        "src": "assets/gallery/entrance.jpg",
+        "caption": "입구"
+      },
+      {
+        "src": "assets/gallery/lobby.jpg",
+        "caption": "로비 · 신발장"
+      },
+      {
+        "src": "assets/gallery/locker-room.jpg",
+        "caption": "탈의실"
+      },
+      {
+        "src": "assets/gallery/shower.jpg",
+        "caption": "샤워실"
+      }
+    ]
   }
 };
 

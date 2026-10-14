@@ -213,6 +213,24 @@
     .tt th.tt-time{width:48px;font-size:10px;}
   }
 
+  /* 시설 갤러리 */
+  .gal-grid{margin-top:32px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+  .gal-item{width:calc((100% - 36px)/4);position:relative;display:block;padding:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);cursor:zoom-in;aspect-ratio:3/4;}
+  .gal-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease;}
+  .gal-item:hover img{transform:scale(1.04);}
+  .gal-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .gal-item span{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;text-align:left;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(180deg,transparent,rgba(0,0,0,.72));}
+  .lightbox{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:12px;}
+  .lightbox[hidden]{display:none;}
+  .lightbox img{max-width:100%;max-height:82vh;border-radius:10px;object-fit:contain;}
+  .lb-cap{color:var(--text);font-size:14px;font-weight:700;}
+  .lb-close{position:absolute;top:14px;right:16px;width:44px;height:44px;border:none;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;}
+  @media (max-width:820px){
+    .gal-grid{gap:10px;}
+    .gal-item{width:calc((100% - 10px)/2);}
+    .gal-item:first-child{width:100%;aspect-ratio:4/3;}
+  }
+
   /* 관장/트레이너 */
   .coach-grid{
     display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:36px;
@@ -429,6 +447,20 @@
   </div>
 </section>
 
+<section class="programs" id="gallery">
+  <div class="wrap">
+    <h2 class="section-title" id="galTitle"></h2>
+    <p class="section-sub" id="galSub"></p>
+    <div class="gal-grid" id="galGrid"></div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" type="button" aria-label="닫기">×</button>
+  <img id="lbImg" alt="">
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
 <section>
   <div class="offer">
     <h2 id="offerTitle"></h2>
@@ -489,6 +521,30 @@
 <script>
   function esc(s){
     return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function renderGallery(g){
+    var sec = document.getElementById("gallery");
+    var items = ((g && g.items) || []).filter(function(it){ return it && it.src; });
+    if (!items.length) { sec.style.display = "none"; return; }
+    document.getElementById("galTitle").textContent = g.title || "시설 둘러보기";
+    document.getElementById("galSub").textContent = g.sub || "";
+    document.getElementById("galGrid").innerHTML = items.map(function(it, i){
+      var cap = it.caption || "";
+      return '<button type="button" class="gal-item" data-i="'+i+'" aria-label="'+esc(cap)+' 크게 보기">' +
+        '<img src="'+esc(it.src)+'" alt="'+esc(cap)+'" loading="lazy" decoding="async">' +
+        (cap ? "<span>"+esc(cap)+"</span>" : "") + "</button>";
+    }).join("");
+    var lb = document.getElementById("lightbox"), lbImg = document.getElementById("lbImg"), lbCap = document.getElementById("lbCap");
+    function close(){ lb.hidden = true; document.body.style.overflow = ""; }
+    document.getElementById("galGrid").addEventListener("click", function(ev){
+      var b = ev.target.closest(".gal-item"); if (!b) return;
+      var it = items[+b.getAttribute("data-i")];
+      lbImg.src = it.src; lbImg.alt = it.caption || ""; lbCap.textContent = it.caption || "";
+      lb.hidden = false; document.body.style.overflow = "hidden";
+    });
+    lb.addEventListener("click", close);
+    document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !lb.hidden) close(); });
   }
 
   function renderTimetable(t){
@@ -638,6 +694,7 @@
     document.getElementById("footerNote").textContent = c.footer.note;
 
     renderTimetable(c.timetable);
+    renderGallery(c.gallery);
 
     initNaverMap(c);
 

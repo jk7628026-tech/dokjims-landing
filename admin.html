@@ -280,6 +280,17 @@
       <div class="field"><label>용어 설명 (한 줄에 하나씩, "용어: 설명" 형식)</label><textarea id="ttGlossInput" style="min-height:90px;" oninput="state.timetable.glossary=parseGloss(this.value)"></textarea></div>
     </section>
 
+
+    <section class="panel">
+      <h2>시설 갤러리</h2>
+      <div class="desc">사진 설명을 고치거나, 순서를 바꾸거나, 빼실 수 있어요. 사진 자체를 새로 추가하려면 파일을 저에게 보내주세요 (사이트 속도를 위해 사진을 별도 파일로 관리해요). 사진을 모두 빼면 이 섹션은 사이트에서 사라져요.</div>
+      <div class="row2">
+        <div class="field"><label>섹션 제목</label><input type="text" data-path="gallery.title"></div>
+        <div class="field"><label>한 줄 안내</label><input type="text" data-path="gallery.sub"></div>
+      </div>
+      <div id="galRows"></div>
+    </section>
+
     <section class="panel">
       <h2>관장님 · 트레이너쌤</h2>
       <div id="coachList"></div>
@@ -530,6 +541,31 @@
     renderTimetable();
   }
 
+  function renderGalleryAdmin(){
+    var items = state.gallery.items || [];
+    document.getElementById("galRows").innerHTML = items.map(function(it, i){
+      return '<div class="item-card" style="display:flex;gap:14px;align-items:center;">' +
+        '<div class="photo-thumb square" style="background-image:url(\''+esc(it.src)+'\');border-radius:10px;width:64px;height:84px;flex-shrink:0;"></div>' +
+        '<div style="flex:1;min-width:0;"><div class="field" style="margin:0;"><label>사진 설명 '+(i+1)+'</label><input type="text" value="'+esc(it.caption||"")+'" oninput="setPath(state,\'gallery.items.'+i+'.caption\',this.value)"></div></div>' +
+        '<div class="photo-actions" style="flex-direction:column;gap:6px;">' +
+          '<button type="button" class="upload-btn" '+(i===0?'disabled':'')+' onclick="moveGal('+i+',-1)">↑</button>' +
+          '<button type="button" class="upload-btn" '+(i===items.length-1?'disabled':'')+' onclick="moveGal('+i+',1)">↓</button>' +
+        '</div>' +
+        '<button type="button" class="remove-btn" onclick="removeGal('+i+')">삭제</button>' +
+      '</div>';
+    }).join("");
+  }
+  function moveGal(i, d){
+    var a = state.gallery.items, j = i + d;
+    if (j < 0 || j >= a.length) return;
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    renderGalleryAdmin();
+  }
+  function removeGal(i){
+    state.gallery.items.splice(i, 1);
+    renderGalleryAdmin();
+  }
+
   function renderAll(){
     bindSimpleFields();
     renderTrust();
@@ -537,6 +573,7 @@
     renderEmpathy();
     renderPrograms();
     renderTimetable();
+    renderGalleryAdmin();
     renderCoaches();
     renderInstaUploads();
     renderFaq();
