@@ -14,7 +14,7 @@ const DOKJIMS_DEFAULTS = {
     "address": "경기도 성남시 중원구 광명로 93, 5층 (수진역 인근)",
     "subway": "8호선 수진역, 모란역 도보 이동 가능",
     "hours": "10:00~22:00",
-    "parking": "주차 가능",
+    "parking": "건물 내 주차는 어려워요. 인근 공영주차장 또는 옆 푸르지오시티 주차장을 이용해주세요.",
     "mapClientId": "d1zk69ukw5",
     "mapLat": "37.4353492",
     "mapLng": "127.1393136",
